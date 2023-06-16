@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Certificates</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.8.335/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #141e30;
+      background-image: linear-gradient(to bottom right, #000, #400000);
+      overflow-y: auto;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .certificate-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .certificate-container {
+      position: relative;
+      border: 1px solid #ccc;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      overflow: hidden;
+      max-width: 100%;
+      max-height: 100%;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .certificate-container.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .certificate-container.active {
+      transform: translateY(-5px) scale(1.1);
+    }
+
+    .certificate-container canvas {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    .download-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: none;
+      color: #333;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .certificate-container:hover .download-icon {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="fullpage">
+    <div class="section">
+      <div class="container">
+        <h1 class="text-center mb-4 text-light">My Certificates</h1>
+        <p>in order of recency</p>
+
+        <div class="certificate-grid">
+          <!-- Add more div elements for other certificates -->
+          <div class="certificate-container">
+            <canvas id="certificate1"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('1.pdf')" data-url="1.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate2"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('2.1.pdf')" data-url="2.1.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate3"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('2.2.pdf')" data-url="2.2.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate4"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('03.pdf')" data-url="03.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate5"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('4.pdf')" data-url="4.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate6"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('5.pdf')" data-url="5.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate7"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('6.pdf')" data-url="6.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate8"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('7.pdf')" data-url="7.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate9"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('8.pdf')" data-url="8.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate10"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('9.pdf')" data-url="9.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate11"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('10.pdf')" data-url="10.pdf"></i>
+          </div>
+          <div class="certificate-container">
+            <canvas id="certificate12"></canvas>
+            <i class="download-icon fas fa-download" onclick="openInNewTab('11.pdf')" data-url="11.pdf"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function renderPDF(url, containerId) {
+      const canvas = document.getElementById(containerId);
+      const context = canvas.getContext('2d');
+
+      // Asynchronous loading of the PDF
+      pdfjsLib.getDocument(url).promise.then(function (pdf) {
+        // Fetch the first page
+        pdf.getPage(1).then(function (page) {
+          // Set the desired scale factor to fit the entire page
+          const scale = 1;
+
+          // Get the viewport of the PDF page
+          const viewport = page.getViewport({ scale });
+
+          // Set the canvas dimensions based on the viewport
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          // Render the PDF page on the canvas
+          const renderContext = {
+            canvasContext: context,
+            viewport
+          };
+          page.render(renderContext);
+        });
+      });
+    }
+
+    function openInNewTab(url) {
+      const newWindow = window.open(url, '_blank');
+      newWindow.focus();
+    }
+    
+    // Call the renderPDF function for each certificate
+    const certificates = [
+      { url: '1.pdf', containerId: 'certificate1' },
+      { url: '2.1.pdf', containerId: 'certificate2' },
+      { url: '2.2.pdf', containerId: 'certificate3' },
+      { url: '03.pdf', containerId: 'certificate4' },
+      { url: '4.pdf', containerId: 'certificate5' },
+      { url: '5.pdf', containerId: 'certificate6' },
+      { url: '6.pdf', containerId: 'certificate7' },
+      { url: '7.pdf', containerId: 'certificate8' },
+      { url: '8.pdf', containerId: 'certificate9' },
+      { url: '9.pdf', containerId: 'certificate10' },
+      { url: '10.pdf', containerId: 'certificate11' },
+      { url: '11.pdf', containerId: 'certificate12' }
+    ];
+
+    certificates.forEach(certificate => {
+      renderPDF(certificate.url, certificate.containerId);
+    });
+  </script>
+</body>
+
+</html>
